@@ -1,6 +1,4 @@
-# Startup AWS EC2
-
-AWS EC2の初期設定
+# ホスト環境構築編
 
 ## WSL
 
@@ -141,6 +139,13 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
+## gitconfigの設定
+
+```bash
+git config --global user.name "username"
+git config --global user.email emailaddress@address.com
+```
+
 ## Dockerの起動
 
 サービス起動
@@ -159,10 +164,16 @@ sudo usermod -a -G docker ec2-user
 docker run hello-world
 ```
 
-## OpenSSLのインストール
+## OpenSSLのインストール（CMakeに必要）
 
+** Amazon Linux **
 ```bash
 sudo yum install openssl-devel.x86_64
+```
+
+** Ubuntu **
+```bash
+sudo apt install libssl-dev
 ```
 
 ## CMakeのインストール
@@ -174,7 +185,175 @@ cd cmake-3.23.0-rc4/
 ./bootstrup
 make
 sudo make install
+cd ..
+rm -r cmake-3.23.0-rc4
+rm cmake-3.23.0-rc4.tar.gz
 ```
+
+## Docker-composeのインストール
+
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+```
+
+# コンテナ構築編
+https://github.com/valtok7/docker-env.git
+
+ディレクトリ構成
+```
+├── .devcontainer
+│   ├── devcontainer.json
+│   ├── Dockerfile
+│   └── run_docker_env.sh
+├── .vscode
+│   └── c_cpp_properties.json
+└───.gitignore
+```
+
+Dockerfile
+```docker
+# base image
+FROM ubuntu:20.04
+ENV DEBIAN_FRONTEND=noninteractive
+
+# install software
+# ベースイメージにはsudoが入っていないので注意
+RUN apt-get update && \
+    apt-get install -y build-essential cmake libssl-dev clang python3-pip sudo git
+## googletest
+RUN git clone https://github.com/google/googletest.git -b release-1.11.0 \
+    && cd googletest \
+    && mkdir build \
+    && cd build \
+    && cmake .. \
+    && make \
+    && sudo make install    # Install in /usr/local/ by default
+
+# add user
+# Vscodeから起動した場合UID,GID,USERNAMEはdevcontainer.jsonに記載の値に書き換えられる。直接docker runで起動したときはこの値が使用される。
+ARG UID=1000
+ARG GID=1000
+ARG USERNAME=user
+RUN groupadd --gid $GID USERNAME \
+    && useradd -m -s /bin/bash --uid $UID --gid $GID $USERNAME \
+    && echo $USERNAME:$USERNAME | chpasswd \
+    && gpasswd -a $USERNAME sudo
+USER $USERNAME
+```
+
+docker-compose.yml
+```yml
+version: "3.3"
+services:
+  develop:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: develop
+    container_name: develop
+    volumes:
+      - type: bind
+        source: .
+        target: /workspace
+    stdin_open: true
+    tty: true
+    working_dir: /workspace
+    command: /bin/sh -c "while sleep 1000; do :; done"
+```
+
+起動用スクリプトとしてrun_docker_env.shを用意。
+run_docker_env.sh
+```bash
+sudo docker image build -t docker_env .
+sudo docker run -v /home/ito/work/docker-env:/workspace/docker_env -w /workspace/docker_env -it docker_env
+```
+（作成時はchmod +x run_docker_env.shをしておくこと）
+
+c_cpp_properties.json
+```json
+{
+	"name": "Ubuntu",
+	"build": {
+    // Docker-composeを使うとvscodeのExtensionの自動インストールが行われない（バグかもしれない）。そのためDockerfileから起動する。
+		"dockerfile": "Dockerfile",
+    // WSL Ubuntuの初期ユーザーのUser IDとGroup IDを使う。UIDとGUDがあっていればUsernameが異なっていてもファイルのパーミッションが同一になるので、コンテナ上で編集したファイルがWSL上で編集できないということがなくなる。
+		"args": {
+			"UID": "1000",
+			"GID": "1000",
+			"USERNAME": "user"
+		}
+	},
+	"settings": {
+		"C_Cpp.default.cppStandard": "c++17",
+		"C_Cpp.clang_format_sortIncludes": true,
+		"C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4, AccessModifierOffset: -4}",
+		"editor.formatOnSave": true,
+	},
+	"extensions": [
+		"ms-vscode.cpptools-extension-pack"
+	],
+	"remoteUser": "user"
+}
+```
+
+```json
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            // clangにしないとvscodeのインテリセンスのエラー表示が誤ったものになる（gccのstlがclang的にコンパイルできないとしてエラーにさせられる？）
+            "compilerPath": "/usr/bin/clang++",
+            "cStandard": "gnu17",
+            // clangにしている理由は上記
+            "intelliSenseMode": "linux-clang-x64",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
+```
+
+## コンテナの操作
+コンテナのビルドと起動
+```bash
+docker-compose up -d
+```
+-dはバックグラウンドで実行の意味
+
+コンテナに入る
+```bash
+docker container exec -it (コンテナ名) /bin/bash
+```
+
+コンテナの確認
+```bash
+docker ps -a
+```
+
+コンテナの削除
+```bash
+docker rm (コンテナID)
+```
+コンテナIDはdocker ps -aで確認できる
+
+
+## VS Codeを使用したコンテナの起動
+Dockerfileのあるディレクトリでcode .を実行
+左下の緑色の部分をクリックしてReopen in containerを選択
+
+
+
+
+
+
+
+
 
 ## GoogleTestのインストール
 
@@ -188,13 +367,6 @@ make
 sudo make install    # Install in /usr/local/ by default
 ```
 
-## Docker-composeのインストール
-
-```bash
-sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-```
 
 
 
