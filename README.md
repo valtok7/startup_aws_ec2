@@ -206,6 +206,7 @@ https://github.com/valtok7/docker-env.git
 ├── .devcontainer
 │   ├── devcontainer.json
 │   ├── Dockerfile
+│   ├── requirements.txt
 │   └── run_docker_env.sh
 ├── .vscode
 │   └── c_cpp_properties.json
@@ -221,7 +222,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install software
 # ベースイメージにはsudoが入っていないので注意
 RUN apt-get update && \
-    apt-get install -y build-essential cmake libssl-dev clang python3-pip sudo git
+    apt-get install -y build-essential gdb cmake libssl-dev clang python3-pip sudo git iputils-ping net-tools python3-pip
 ## googletest
 RUN git clone https://github.com/google/googletest.git -b release-1.11.0 \
     && cd googletest \
@@ -286,18 +287,50 @@ c_cpp_properties.json
 		}
 	},
 	"settings": {
+	"settings": {
 		"C_Cpp.default.cppStandard": "c++17",
 		"C_Cpp.clang_format_sortIncludes": true,
 		"C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4, AccessModifierOffset: -4}",
 		"editor.formatOnSave": true,
+		"python.languageServer": "Pylance",
+		"python.pythonPath": "/usr/bin/python3",
+		"python.linting.flake8Args": [
+			"--max-line-length", // 1 行あたりの文字数を 110 に設定
+			"110"
+		],
+		"python.formatting.provider": "autopep8",
+		"python.formatting.autopep8Args": [
+			"--max-line-length", // 1 行あたりの文字数を 110 に設定
+			"110"
+		],
 	},
 	"extensions": [
-		"ms-vscode.cpptools-extension-pack"
+		"ms-vscode.cpptools-extension-pack",
+		"visualstudioexptteam.vscodeintellicode",
+		"donjayamanne.git-extension-pack",
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"shardulm94.trailing-spaces",
+		"vscodevim.vim"
 	],
+	"postCreateCommand": "pip3 install -r ./devcontainer/requirements.txt",
 	"remoteUser": "user"
 }
 ```
 
+requirements.txt
+```
+autopep8==1.5.4
+flake8==3.8.4
+mccabe==0.6.1
+numpy==1.19.4
+pycodestyle==2.6.0
+pyflakes==2.2.0
+toml==0.10.2
+```
+requirements.txt は Python のパッケージ管理に使うファイル
+
+c_cpp_properties.json
 ```json
 {
     "configurations": [
@@ -366,6 +399,11 @@ cmake ..             # Generate native build scripts for GoogleTest.
 make
 sudo make install    # Install in /usr/local/ by default
 ```
+
+
+
+TCP/IP
+ディープラーニング
 
 
 
