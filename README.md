@@ -286,6 +286,11 @@ c_cpp_properties.json
 			"USERNAME": "user"
 		}
 	},
+  // docker runに渡す引数
+	"runArgs": [
+    // IP系の操作をするために必要
+		"--privileged"
+	],
 	"settings": {
 	"settings": {
 		"C_Cpp.default.cppStandard": "c++17",
@@ -400,28 +405,41 @@ make
 sudo make install    # Install in /usr/local/ by default
 ```
 
+# Aarch64
+
+## 環境構築
+QEMUのインストール
+```bash
+# QEMUのconfigに必要
+sudo apt install ninja-build
+sudo apt install pkg-config
+sudo apt install libglib2.0-dev
+# see https://www.qemu.org/download/
+git clone https://gitlab.com/qemu-project/qemu.git
+cd qemu
+git submodule init
+git submodule update --recursive
+# aarch64用にするため--target-list=aarch64-linux-userを指定
+./configure --target-list=aarch64-linux-user
+make
+make install
+```
+
+g++のインストール
+```bash
+# see https://mijinc0.github.io/blog/post/20190530_cpp_arm_cross_compile/
+sudo apt install g++-aarch64-linux-gnu
+```
+
+~/.bash_profileを作成し、下記を記載する。bash起動時に読み込まれる。
+```bash
+# QEMUのライブラリの位置を指定
+export QEMU_LD_PREFIX=/usr/aarch64-linux-gnu
+```
 
 
-TCP/IP
-ディープラーニング
-
-
-
-
-
-# Author
-
-作成情報を列挙する
-
-* 作成者
-* 所属
-* E-mail
-
-# License
-ライセンスを明示する
-
-"hoge" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
-
-社内向けなら社外秘であることを明示してる
-
-"hoge" is Confidential.
+## 実行
+helloを実行する場合
+```bash
+qemu hello
+```
