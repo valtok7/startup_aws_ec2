@@ -443,3 +443,86 @@ helloを実行する場合
 ```bash
 qemu hello
 ```
+
+# fishの導入
+
+## 環境構築
+インストール
+```bash
+sudo apt-add-repository ppa:fish-shell/release-3
+sudo apt update
+sudo apt install fish
+```
+
+標準shellにする
+```bash
+chsh -s $(which fish)
+```
+
+Oh-my-fish(fish plug-in manager)
+```bash
+curl -L https://get.oh-my.fish | fish
+curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
+```
+
+プロンプトの変更
+```bash
+fisher install oh-my-fish/theme-bobthefish
+```
+
+peco（ctrl-rでコマンド履歴を検索）
+```bash
+brew install peco                                                                               
+fisher install oh-my-fish/plugin-peco                                                               
+```
+
+ctrl+wでpecoを有効にするため、下記を追加する
+~/.config/fish/config.fish   
+```bash
+function fish_user_key_bindings
+  bind \cw 'peco_select_history (commandline -b)'
+end
+```
+
+bass（bashラッパー）
+```bash
+fisher install edc/bass
+```
+
+fzf（ファイル検索など）
+```bash
+sudo apt install fzf
+fisher install jethrokuan/fzf
+```
+
+## 使い方
+ctrl+w
+コマンド補完
+
+prevd, nextd
+ディレクトリ移動
+
+bash互換1
+bass 'bash用コマンド'
+例
+bass 'echo $(date)'
+
+bash互換2
+シェルスクリプトの先頭に
+
+ctrl+o
+ファイル検索
+
+ctrl+r
+コマンド履歴検索
+
+alt+c
+サブディレクトリcd
+
+alt+shift+c
+非表示含めたサブディレクトリcd
+
+alt
+デフォルトのエディター($EDITOR)を使用してファイルを開く
+
+
