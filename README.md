@@ -476,7 +476,8 @@ c         #Continue
 http://www.fos.kuis.kyoto-u.ac.jp/le2soft/siryo-html/node49.html
 
 
-
+ここにmultiarchのデバッグ方法が書かれている
+https://opencoursehub.cs.sfu.ca/bfraser/grav-cms/cmpt433/guides/files/DebuggingGuide.pdf
 
 
 
