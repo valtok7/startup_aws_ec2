@@ -422,27 +422,63 @@ git submodule update --recursive
 # aarch64用にするため--target-list=aarch64-linux-userを指定
 ./configure --target-list=aarch64-linux-user
 make
-make install
+sudo make install
 ```
 
-g++のインストール
+aarch64用g++のインストール
 ```bash
 # see https://mijinc0.github.io/blog/post/20190530_cpp_arm_cross_compile/
 sudo apt install g++-aarch64-linux-gnu
 ```
 
+aarch64用gdbのインストール
+```bash
+# see https://qiita.com/takeoverjp/items/5df8e17f0c361ecd3563
+sudo apt install gdb-multiarch
+```
+
+
+* bashの場合
 ~/.bash_profileを作成し、下記を記載する。bash起動時に読み込まれる。
 ```bash
-# QEMUのライブラリの位置を指定
 export QEMU_LD_PREFIX=/usr/aarch64-linux-gnu
+```
+* fishの場合
+環境変数の永続化を行う
+```bash
+export set -Ux QEMU_LD_PREFIX /usr/aarch64-linux-gnu
 ```
 
 
 ## 実行
 helloを実行する場合
 ```bash
-qemu hello
+qemu-aarch64 hello
 ```
+
+## デバッグ実行
+helloを実行する場合
+```bash
+qemu-aarch64 -g 1111 hello
+```
+別のシェルを起動してgdbを実行
+```bash
+gdb-multiarch
+```
+
+gdbを操作
+```bash
+file hello
+target remote localhost:1111
+b main    #ブレイクポイントをmainに設定
+c         #Continue
+```
+http://www.fos.kuis.kyoto-u.ac.jp/le2soft/siryo-html/node49.html
+
+
+
+
+
 
 # fishの導入
 
@@ -524,5 +560,34 @@ alt+shift+c
 
 alt
 デフォルトのエディター($EDITOR)を使用してファイルを開く
+
+
+# Windows Eclipse
+
+## GNU Toolchain for Aarch64
+https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-a/downloads
+AArch64 GNU/Linux target (aarch64-none-linux-gnu)をダウンロードする。
+
+c:\tool\の下などに解答する。
+
+## Eclipseのクロスコンパイル設定
+プロジェクトのプロパティを開く
+C/C++ビルド - ツール・チェーン・エディター - 現在のツールチェーン
+を
+Cross GCCに変更する。
+
+C/C++ビルド - 設定 - Cross Setting - 接頭辞
+を"aarch64-none-linux-gnu-"とする。
+パスを"C:\Tool\gcc-arm-10.3-2021.07-mingw-w64-i686-aarch64-none-linux-gnu\bin"にする
+
+C/C++ビルド - 設定 - ビルド成果物 - 成果物の拡張子
+をaにしておくとわかりやすい。
+
+ビルドしてwslの上にコピーする。
+
+chmod +x hello.a
+
+qemu-aarch64 hello.a
+みたいにすると実行できる。
 
 
