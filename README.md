@@ -479,7 +479,23 @@ http://www.fos.kuis.kyoto-u.ac.jp/le2soft/siryo-html/node49.html
 ここにmultiarchのデバッグ方法が書かれている
 https://opencoursehub.cs.sfu.ca/bfraser/grav-cms/cmpt433/guides/files/DebuggingGuide.pdf
 
+## Window上のEclipseからアタッチ
+msys64をインストールする(pacmanを使用するため)
 
+gdb-multiarchをインストールする
+msysコンソール上から下記を実施
+```bash
+pacman -S mingw-w64-x86_64-gdb-multiarch
+```
+
+eclipse
+デバッグ構成 - GDBハードウェアデバッグ - デバッガー - GDB Command
+C:\msys64\mingw64\bin\gdb-multiarch.exe
+デバッグ構成 - GDBハードウェアデバッグ - デバッガー - GDB Connection Setting
+接続対象のIPアドレス:ポート番号を指定
+例：172.21.65.177:1111
+
+デバッグを押すと開始する
 
 # fishの導入
 
@@ -494,6 +510,13 @@ sudo apt install fish
 標準shellにする
 ```bash
 chsh -s $(which fish)
+# chsh -s /bin/bash
+# echo $SHELL 現在使用しているシェルの表示
+# cat /etc/shells 使用できるシェルの一覧
+```
+一時的にfishをshellにする場合
+```bash
+fish
 ```
 
 Oh-my-fish(fish plug-in manager)
