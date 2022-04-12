@@ -467,12 +467,98 @@ gdb-multiarch
 ```
 
 gdbを操作
-```bash
+```gdb
 file hello
 target remote localhost:1111
 b main    #ブレイクポイントをmainに設定
 c         #Continue
 ```
+
+shared libraryのデバッグ
+soファイルは通常LD_LIBRARY_PATHの通った場所に置く必要があるが、QEMUの場合は/usr/aarch64-linux-gnu/libに置く。
+```gdb
+(gdb) file hello
+(gdb) set solib-search-path ./     # 共有ライブラリのディレクトリ（シンボル読み込み）
+(gdb) directory ../../calc/Debug   # 共有ライブラリのディレクトリを追加（ソース読み込み）
+(gdb) target remote localhost:1111
+(gdb) b main
+(gdb) c
+(gdb) info shared
+From                To                  Syms Read   Shared Object Library
+0x000000550083f7c0  0x000000550083f954  Yes         /home/ito/work/hello_aarch64/hello_aarch64/Debug/libcalc.so
+                                        No          /lib/libstdc++.so.6
+                                        No          /lib/libm.so.6
+                                        No          /lib/libgcc_s.so.1
+                                        No          /lib/libc.so.6
+                                        No          /lib/ld-linux-aarch64.so.1
+
+```
+一連の処理を.gdbinitに書いておけば起動時に自動化できる。
+
+
+~/.gdbinitサンプル
+```gdb
+# コマンド履歴を保存する
+set history save on
+set history size 10000
+set history filename ~/.gdb_history
+
+# listコマンドで表示する行数
+set listsize 25
+
+# 配列の要素を全て表示する
+set print elements 0
+
+# 構造体のメンバを1行ずつ表示できる
+set print pretty on
+
+# Auto load local .gdbinit
+set auto-load local-gdbinit
+set auto-load safe-path ~/work/hello_aarch64/hello_aarch64/Debug/  # 読み込みを許可する
+```
+
+## gdb-dashboard
+https://github.com/cyrus-and/gdb-dashboard
+.gdbinitを~/に置く。
+
+~/.config/gdb-dashboard/initに初期設定を書く
+例えば以下のようにする。
+```gdb
+# コマンド履歴を保存する
+set history save on
+set history size 10000
+set history filename ~/.gdb_history
+
+# listコマンドで表示する行数
+set listsize 25
+
+# 配列の要素を全て表示する
+set print elements 0
+
+# 構造体のメンバを1行ずつ表示できる
+set print pretty on
+
+# Auto load local .gdbinit
+set auto-load local-gdbinit
+set auto-load safe-path ~/work/hello_aarch64/hello_aarch64/Debug/
+
+# GDB dashboard configuration
+dashboard -layout !assembly breakpoints expressions !history !memory !registers source stack !threads variables
+```
+~/work/hello_aarch64/hello_aarch64/Debug/.gdbinitにローカルプロジェクトの初期設定を書く。
+例えば以下のようにする。
+```gdb
+file hello_aarch64.a
+set solib-search-path ./
+directory ../../calc/Debug
+target remote localhost:1111
+b main
+c
+info shared
+```
+
+参考
+https://retrotecture.jp/cortexm/gdb.html#conffile
 http://www.fos.kuis.kyoto-u.ac.jp/le2soft/siryo-html/node49.html
 
 
