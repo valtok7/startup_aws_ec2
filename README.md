@@ -557,6 +557,10 @@ c
 info shared
 ```
 
+パスの差し替え
+set substitute-path from-path  to-path
+
+
 参考
 https://retrotecture.jp/cortexm/gdb.html#conffile
 http://www.fos.kuis.kyoto-u.ac.jp/le2soft/siryo-html/node49.html
@@ -700,4 +704,70 @@ chmod +x hello.a
 qemu-aarch64 hello.a
 みたいにすると実行できる。
 
+# MYSQL
+
+インストール
+```bash
+sudo apt install mysql-server
+```
+サービス開始・接続
+```bash
+sudo service mysql start
+sudo mysql -u root -p
+```
+データベースの作成
+```sql
+mysql> create database <データベース名>;
+```
+外部接続用のユーザーを追加する
+localhost以外で接続する場合(外部からの接続や、同一マシン内でもマシン名やIPアドレスで接続)、追加で以下の設定が必要です。
+```sql
+mysql> CREATE USER '<ユーザー>'@<ホスト> IDENTIFIED WITH mysql_native_password BY '<パスワード>';
+mysql> GRANT ALL PRIVILEGES ON <データベース>.<テーブル> TO '<ユーザー>'@<ホスト>;
+mysql> FLUSH PRIVILEGES;
+```
+ユーザーが追加されたことを確認する
+'root'@'%'を追加した場合
+```sql
+mysql> select user,host from mysql.user;
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| root             | %         |
+| debian-sys-maint | localhost |
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+mysql> exit
+```
+/etc/mysql/mysql.conf.d/mysqld.cnfの次の行をコメントアウトする
+または接続を許可するIPアドレスに変更する
+```
+bind-address        = 127.0.0.1
+```
+MySQLをリスタートする
+```bash
+sudo service mysql restart
+```
+ポートが開いているか確認
+```bash
+namp <IP address>
+
+PORT     STATE SERVICE
+3306/tcp open  mysql
+```
+
+参考
+https://www.yokoweb.net/2020/08/16/ubuntu-20_04-server-mysql/#toc2
+https://moewe-net.com/database/mysql-install-on-ubuntu
+
+# 自作OS
+
+https://qiita.com/hotchpotch/items/9cdf6233c2b09e57aac1
+https://forest1040.hatenadiary.org/entry/20120921/1348191532
+
+## Makefile
+https://ie.u-ryukyu.ac.jp/~e085739/c.makefile.tuts.html
 
