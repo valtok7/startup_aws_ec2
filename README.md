@@ -766,7 +766,36 @@ https://moewe-net.com/database/mysql-install-on-ubuntu
 # 自作OS
 
 https://qiita.com/hotchpotch/items/9cdf6233c2b09e57aac1
+
+## gdb
 https://forest1040.hatenadiary.org/entry/20120921/1348191532
+パッチを当てて、gdbのトップのMakefileのCLAGSに-z muldefsを足すことでビルドが通った。
+↓
+gdb-12.1で
+mkdir build
+cd build
+../configure --target=h8300-elf --disable-nls --disable-werror
+とすればビルドが通る
+
+gdbを使用した組み込みソフトのシミュレーション
+https://www.simulationroom999.com/blog/gdb-iss1/
+
+## USB-シリアル変換ケーブルを使えるようにする
+https://qiita.com/baggio/items/28c13ed8ac09fc7ebdf1
+
+sudo chmod g+wr /dev/ttyUSB0
+sudo chmod o+wr /dev/ttyUSB0
+を行う必要あり
+
+## xmodemでのファイル転送
+sudo screen /dev/ttyUSB0
+kozos > load
+ctrl+a, :
+exec !! sx (filename)
+
+screenを終了するときは
+ctrl+a, :
+quit
 
 ## Makefile
 https://ie.u-ryukyu.ac.jp/~e085739/c.makefile.tuts.html
