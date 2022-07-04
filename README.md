@@ -829,3 +829,5 @@ STEPN（ステップン）
 
 
 NFTは「100％、Greater fool theoryに基づいている」とゲイツ氏。Greater fool theoryとは、金融業界で、過大評価された資産でも、自分より愚かな誰かにさらに高値で転売できると踏んで購入することを指す。現実的な価値との乖離が大きくなりすぎれば、価格は大幅に下落する。
+
+https://www.desultoryquest.com/blog/using-gcc-and-clang-with-eclipse-on-windows/
