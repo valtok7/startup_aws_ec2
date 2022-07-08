@@ -821,6 +821,7 @@ X to earn
 プレイすることで仮想通貨を獲得できるゲーム
 STEPN（ステップン）
 睡眠の時間や質によって報酬が得られる「Sleep to Earn」、学んで稼げる「Learn to Earn」や飲食することによって稼ぐ「Eat to Earn」「Drink to Earn」
+https://tokenknowledge.com/stepn-move-to-earn/
 
 ユガ・ラボ
 2022/4/30 開発中のメタバースプロジェクト「Otherside」における土地を表すNFT「Otherdeed」の販売を完了。その売り上げは、2億8500万ドル（350億円）にも達した。
