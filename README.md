@@ -803,13 +803,24 @@ https://ie.u-ryukyu.ac.jp/~e085739/c.makefile.tuts.html
 
 ブロックチェーン技術を活用することで、コピーが容易なデジタルデータに対し、唯一無二な資産的価値を付与し、新たな売買市場を生み出す技術として注目を浴びている「NFT（Non-Fungible Token：非代替性トークン）」。
 
-
 2017年にイーサリアムブロックチェーン上で誕生した「CryptoKitties」というゲームに端を発する。
+
+NyanCat
+https://courrier.jp/news/archives/237102/
+
 2021年3月には、Twitter創業者のジャック・ドーシー氏の出品した同氏の初ツイートが約3億円で落札。
+https://artnewsjapan.com/news_criticism/article/176
+
 イーロン・マスク氏が出品した音楽作品には約1億円の値が付いた。
 Beeple「The First 5000 Days」 70億円
 
-ゲーム上の資産が売買しやすい
+NFTと新規通貨を絡めたゲームが乱発されている。
+
+
+X to earn
+プレイすることで仮想通貨を獲得できるゲーム
+STEPN（ステップン）
+睡眠の時間や質によって報酬が得られる「Sleep to Earn」、学んで稼げる「Learn to Earn」や飲食することによって稼ぐ「Eat to Earn」「Drink to Earn」
 
 ユガ・ラボ
 2022/4/30 開発中のメタバースプロジェクト「Otherside」における土地を表すNFT「Otherdeed」の販売を完了。その売り上げは、2億8500万ドル（350億円）にも達した。
@@ -819,16 +830,14 @@ The Sandbox（ザ・サンドボックス）
 完売まで、わずか1分44秒
 最低30万円。1月に194万円。FacebookがMetaになった。
 
-
-X to earn
-プレイすることで仮想通貨を獲得できるゲーム
-STEPN（ステップン）
-睡眠の時間や質によって報酬が得られる「Sleep to Earn」、学んで稼げる「Learn to Earn」や飲食することによって稼ぐ「Eat to Earn」「Drink to Earn」
-
-ババ抜き 仮想通貨
-
+通貨発行利益、先行者利益を
 
 NFTは「100％、Greater fool theoryに基づいている」とゲイツ氏。Greater fool theoryとは、金融業界で、過大評価された資産でも、自分より愚かな誰かにさらに高値で転売できると踏んで購入することを指す。現実的な価値との乖離が大きくなりすぎれば、価格は大幅に下落する。
+
+https://artnewsjapan.com/news_criticism/article/176
+シーナエスタビ。60億円で売って30億円を寄付すると言ってオークションにかけたが、150万円。
+
+
 
 https://www.desultoryquest.com/blog/using-gcc-and-clang-with-eclipse-on-windows/
 
