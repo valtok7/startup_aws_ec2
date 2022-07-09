@@ -843,3 +843,14 @@ https://artnewsjapan.com/news_criticism/article/176
 https://www.desultoryquest.com/blog/using-gcc-and-clang-with-eclipse-on-windows/
 
 https://www.eclipse.org/forums/index.php/t/1097469/
+
+Clang
+https://iwakwak.hatenablog.com/entry/2020/01/16/113714
+https://packages.msys2.org/package/mingw-w64-x86_64-lld?repo=mingw64
+https://qiita.com/syoyo/items/a09d650bbe55c857ad2b
+
+MSYS2
+https://qiita.com/Ted-HM/items/4f2feb9fdacb6c72083c
+
+Eclipse with CMake & Ninja
+https://wiki.gnucash.org/wiki/Eclipse#With_CMake_.26_Ninja
