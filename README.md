@@ -800,6 +800,9 @@ quit
 ## Makefile
 https://ie.u-ryukyu.ac.jp/~e085739/c.makefile.tuts.html
 
+## Raspberry PI
+ホスト:raspberrypi.local or 192.168.0.123
+SSH, port 22
 
 ブロックチェーン技術を活用することで、コピーが容易なデジタルデータに対し、唯一無二な資産的価値を付与し、新たな売買市場を生み出す技術として注目を浴びている「NFT（Non-Fungible Token：非代替性トークン）」。
 
@@ -854,3 +857,78 @@ https://qiita.com/Ted-HM/items/4f2feb9fdacb6c72083c
 
 Eclipse with CMake & Ninja
 https://wiki.gnucash.org/wiki/Eclipse#With_CMake_.26_Ninja
+
+# yocto project
+
+## Quick Build
+https://docs.yoctoproject.org/brief-yoctoprojectqs/index.html
+
+```bash
+$ sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint3 xterm python3-subunit mesa-common-dev zstd liblz4-tool
+$ git clone git://git.yoctoproject.org/poky
+$ cd poky
+$ git checkout -t origin/kirkstone -b my-kirkstone
+$ git pull
+$ source oe-init-build-env   # ->これによりpoky/buildに移動する
+$ bitbake core-image-sato
+$ runqemu qemux86-64 nographic
+```
+rootでログインできる。
+終了するときはCtrl + aを押したあとにxを押す
+
+```bash
+$ cd (pokyに移動)
+$ git clone git://git.yoctoproject.org/meta-raspberrypi
+$ cd meta-raspberrypi
+$ git checkout -t origin/kirkstone -b my-kirkkstone
+$ git pull
+$ cd ../build (poky/buildに移動)
+$ bitbake-layers add-layer ../meta-raspberrypi   # ビルド対象に追加
+```
+
+poky/build/conf/local.confを編集し、
+MACHINE ?= "raspberrypi0"
+を追加する。
+
+```bash
+$ bitbake rpi-test-image
+```
+
+# cmake
+
+CMakeLists.txt
+```
+# CMakeのバージョンを設定
+cmake_minimum_required(VERSION 3.13)
+
+# プロジェクト名と使用する言語を設定
+project(test_cmake CXX)
+
+# a.outという実行ファイルをmain.cppとhello.cppから作成
+add_executable(test_cmake test.cpp)
+
+# 最適化・警告等のオプション
+target_compile_options(test_cmake PUBLIC -O2 -Wall)
+
+# C++の標準規格の指定
+target_compile_features(test_cmake PUBLIC cxx_std_17)
+```
+
+clang.cmake
+```
+set(CMAKE_CXX_COMPILER C:/pleiades/eclipse/llvm-mingw/bin/clang++.exe)
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld")
+```
+
+Command line
+```
+cmd /c "cmake -S . -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=clang_x86_64-w64-mingw32.cmake && cd build && ninja -v"
+```
+-Sはソースツリーの位置
+-Bはビルドツリーの位置
+
+CMake scriptのガイドライン
+https://qiita.com/shohirose/items/5b406f060cd5557814e9
+
